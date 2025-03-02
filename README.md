@@ -6,6 +6,14 @@
 [reference] 
 - https://github.com/IDEA-Research/GroundingDINO
 - https://github.com/Asad-Ismail/Grounding-Dino-FineTuning
+  (from commit 57a66751ef68de19b3e9605a12f09a864c3e139a0)
+
+[feature] 
+- train config
+- layer freeze
+- learning rate scheduling
+- layer-wise learning rate
+- .. 
 
 ---
 
