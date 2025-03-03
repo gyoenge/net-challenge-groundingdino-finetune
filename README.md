@@ -43,6 +43,7 @@
 
 - change train config : change train_config.yaml
 - ** dataset should be matched with multimodal-data (see uploaded example)
+  - use https://github.com/gyoenge/net-challenge-groundingdino-dataset
 - run train 
   ```
   python train.py
