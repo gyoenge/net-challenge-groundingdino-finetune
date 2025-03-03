@@ -1,0 +1,23 @@
+model: 
+  config_path: "groundingdino/config/GroundingDINO_SwinT_OGC.py"
+  weight_path: "weights/groundingdino_swint_ogc.pth"
+
+dataset:
+  # should fit with csv annotation format 
+  image_path: "multimodal-data/images"
+  ann_path: "multimodal-data/annotation/annotation.csv"
+
+train: 
+  num_epochs: 2000
+  learning_rates : {
+    # "backbone": 1e-6,
+    "transformer": 1e-5,
+    # "bert": 5e-6,
+    "feat_map": 1e-5,
+    "input_proj": 1e-5,
+    "bbox_embed": 1e-4,
+    "class_embed": 1e-4
+  }
+  layers_to_freeze: ["backbone", "bert", "transformer.encoder"]
+  save_dir: "weights/model_weights"
+  save_epoch: 50 

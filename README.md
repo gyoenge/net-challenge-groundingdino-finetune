@@ -9,11 +9,15 @@
   (from commit 57a66751ef68de19b3e9605a12f09a864c3e139a0)
 
 [feature] 
-- train config
-- layer freeze
-- learning rate scheduling
-- layer-wise learning rate
-- .. 
+- (train, eval) yaml config 
+- (train) freeze layers 
+- (train) learning rate scheduling 
+- (train) layer-wise learning rate
+- (eval) speed test 
+- (eval) precision, recall, AP50, AP50-95 
+- (eval) show confusion matrix 
+- (eval) save visualization of predicted box & ground truth 
+- ... 
 
 ---
 
@@ -33,6 +37,7 @@
   cd ..
   ```
 
+
 ### train 
 
 - change train config : change train_config.yaml 
@@ -42,3 +47,11 @@
   ```
 
 
+### evaluation 
+
+- change evaluation config : change evaluation_config.yaml
+- ** dataset should be matched with multimodal-data (see uploaded example)
+- run evaluation 
+  ```
+  python evaluation.py
+  ```

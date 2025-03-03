@@ -1,0 +1,21 @@
+model: 
+  config_path: "groundingdino/config/GroundingDINO_SwinT_OGC.py"
+  weight_path: "weights/groundingdino_swint_ogc.pth"
+
+dataset:
+  # should fit with yolov8 od dataset format (label: .txt)
+  image_path: "dataset/knifetest395/images"
+  label_path: "dataset/knifetest395/labels/" 
+
+evaluation: 
+  # prediction setting  
+  prompt: "knife"
+  box_threshold: 0.5
+  text_threshold: 0.5
+  # evaluation metrics 
+  speed: True
+  ap: True 
+  # visualize prediction 
+  visualize_prediction: False 
+  save_path: "result/knifetest395/"
+
