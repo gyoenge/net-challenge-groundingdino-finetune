@@ -41,7 +41,8 @@
 
 ### train 
 
-- change train config : change train_config.yaml 
+- change train config : change train_config.yaml
+- ** dataset should be matched with multimodal-data (see uploaded example)
 - run train 
   ```
   python train.py
@@ -51,7 +52,7 @@
 ### evaluation 
 
 - change evaluation config : change evaluation_config.yaml
-- ** dataset should be matched with multimodal-data (see uploaded example)
+- ** dataset should be matched with yolov8 od dataset
 - run evaluation 
   ```
   python evaluation.py
