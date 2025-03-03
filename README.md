@@ -2,6 +2,7 @@
 
 - 2023 net challenge AI code 
 - groudningDINO finetune
+- knife object detection
 
 [reference] 
 - https://github.com/IDEA-Research/GroundingDINO
