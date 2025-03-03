@@ -132,6 +132,7 @@ def detect_best_box(
         box_threshold, 
         text_threshold, 
         newSize=None, 
+        normalize=False, 
 ):
     # load image 
     image_source, image = load_image(image_file, newSize)
@@ -158,6 +159,13 @@ def detect_best_box(
         nms_threshold=0.3
     )
 
+    # normalize 
+    if normalize: 
+        h, w, _ = image_source.shape
+        x1, y1, x2, y2, confidence, classtruth = best_box
+        normalized = torch.tensor([x1/w, y1/h, x2/w, y2/h, confidence, classtruth])
+        return normalized
+
     return best_box 
 
 
@@ -169,6 +177,8 @@ def predictions_groundtruths(
         box_threshold, 
         text_threshold, 
 ):
+    # boxes should be normalized 
+
     predictions, groundtruths = [], []   
     images_files = glob.glob(os.path.join(image_path, '*'))        
     for idx, image_file in enumerate(images_files):
@@ -183,9 +193,10 @@ def predictions_groundtruths(
             box_threshold, 
             text_threshold, 
             newSize=None, 
+            normalized=True,
         )
         image_source, _ = load_image(image_file, newSize=None)
-        groundtruth = read_label_txt(image_source, label_file)
+        groundtruth = read_label_txt(image_source, label_file, normalized=True)
 
         predictions.append(prediction)
         groundtruths.append(groundtruth)
@@ -195,7 +206,7 @@ def predictions_groundtruths(
 
 ### 
 
-def read_label_txt(image_source, label_file):
+def read_label_txt(image_source, label_file, normalized=True):
     """
     read single label 
     """
@@ -204,13 +215,13 @@ def read_label_txt(image_source, label_file):
         content = f.readline().strip()
         values = content.split()
         boxes = torch.Tensor([float(values[1]), float(values[2]), float(values[3]), float(values[4])])
-        # print("raw label: ", boxes)
-        h, w, _ = image_source.shape
-        # print(h, w)
-        scaled_boxes = boxes * torch.Tensor([w, h, w, h])
-        # print("scaled_boxes: ", scaled_boxes)
-        label_box = box_convert(boxes=scaled_boxes, in_fmt="cxcywh", out_fmt="xyxy")
-        # print("converted: ", label_box)
+        # unnormalize ?
+        if not normalized: 
+            h, w, _ = image_source.shape
+            scaled_boxes = boxes * torch.Tensor([w, h, w, h])
+            label_box = box_convert(boxes=scaled_boxes, in_fmt="cxcywh", out_fmt="xyxy")
+        else: 
+            label_box = box_convert(boxes=boxes, in_fmt="cxcywh", out_fmt="xyxy")
     return label_box   
 
 
@@ -218,7 +229,7 @@ def save_visualized_result(
         image_file, 
         label_file, 
         result_path, 
-        best_box, 
+        best_box, # normalized=False 
 ): 
     """
     save single visulization  
@@ -228,7 +239,7 @@ def save_visualized_result(
     file_name = os.path.basename(image_file)  # includes extension 
 
     # read label 
-    groundtruth = read_label_txt(image_source, label_file)
+    groundtruth = read_label_txt(image_source, label_file, normalized=False)
 
     # visualize result 
     image = cv2.imread(image_file)
@@ -261,8 +272,10 @@ def save_visualized_results(
         text_threshold, 
 ): 
     """
-    save all visulization in path 
+    save all visulization in path
     """  
+    # boxes shoud not be normalized 
+
     images_files = glob.glob(os.path.join(image_path, '*'))        
     for idx, image_file in enumerate(images_files):
         file_name = os.path.splitext(os.path.basename(image_file))[0]
@@ -276,6 +289,7 @@ def save_visualized_results(
             box_threshold, 
             text_threshold, 
             newSize=None, 
+            normalized=False,
         )
         try: 
             result_file = save_visualized_result(
@@ -307,6 +321,7 @@ def measure_speed(model, image_path, text_prompt, newSize=None, logging=False):
             box_threshold=0.6, 
             text_threshold=0.4, 
             newSize=newSize, 
+            normalized=False, 
         )
         if logging and (idx+1)%100 == 0 :
             print(f"{idx+1}번째, {start_time-time.time()} 경과")
